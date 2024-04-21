@@ -4,17 +4,14 @@ using UnityEngine;
 
 public class DragAndDrop : MonoBehaviour
 {
-    Vector3 originalPostion;
-    // Start is called before the first frame update
+    private ManagePuzzleGame puzzleGameManager;
+
+    Vector3 originalPosition;
+
     void Start()
     {
-        originalPostion = transform.position;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        originalPosition = transform.position;
+        puzzleGameManager = FindObjectOfType<ManagePuzzleGame>(); // Find the ManagePuzzleGame script
     }
 
     public void Drag()
@@ -30,41 +27,39 @@ public class DragAndDrop : MonoBehaviour
 
     public void Drop()
     {
-        checkMatch();
-        //GameObject ph1 = GameObject.Find("PH1");
-        //GameObject img = GameObject.Find("image");
-        //float distance = Vector3.Distance(ph1.transform.position, img.transform.position);
-        //if (distance <= 50)
-        //{
-        //    img.transform.position = ph1.transform.position;
-        //}
+        CheckMatch();
+        puzzleGameManager.CheckWinCondition(); // Check win condition after dropping the piece
     }
 
-    public void checkMatch()
+    public void CheckMatch()
     {
-        //GameObject ph1 = GameObject.Find("PH1");
-        //GameObject img = GameObject.Find("image");
         GameObject img = gameObject;
         string tag = gameObject.tag;
-        GameObject ph1 = GameObject.Find("PH" +tag);
-        float distance = Vector3.Distance(ph1.transform.position, img.transform.position);
-        print("Distance" + distance);
-        if (distance <= 50) snap(img, ph1);
-        else moveBack();
+        GameObject ph = GameObject.Find("PH" + tag);
+        float distance = Vector3.Distance(ph.transform.position, img.transform.position);
+        if (distance <= 50)
+        {
+            Snap(img, ph);
+        }
+        else
+        {
+            MoveBack();
+        }
     }
 
-    public void moveBack()
+    public void MoveBack()
     {
-        transform.position = originalPostion;
+        transform.position = originalPosition;
     }
 
-    public void snap(GameObject img, GameObject ph)
+    public void Snap(GameObject img, GameObject ph)
     {
         img.transform.position = ph.transform.position;
+        puzzleGameManager.PiecePlaced();
     }
-
+    
     public void initCardPosition() 
     {
-        originalPostion = transform.position; 
+        originalPosition = transform.position; 
     }
 }
