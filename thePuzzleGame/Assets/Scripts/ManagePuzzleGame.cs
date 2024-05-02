@@ -1,83 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-using System.IO;
 
 public class ManagePuzzleGame : MonoBehaviour
 {
+
     public Image piece;
     public Image placeHolder;
     float phWidth, phHeight;
     float timer;
     bool cardsShuffled = false;
-    private int placedPiecesCount = 0;
-    private Timer timerScript;
-    private int correctlyPlacedPiecesCount = 0;
-    private int totalPiecesCount = 25;
-    public float fastestTime = Mathf.Infinity;
-    private float currentTime;
-    public float test;
-
-    public void CheckWinCondition()
-    {
-        if (correctlyPlacedPiecesCount >= totalPiecesCount)
-        {
-            
-            StopTimerAndLoadHighScoreScene();
-        }
-    }
-
-    private void StopTimerAndLoadHighScoreScene()
-    {
-        if (timerScript != null)
-        {
-            timerScript.StopTimer();
-            currentTime = timerScript.GetElapsedTime(); // Retrieve the current elapsed time
-            if (currentTime < fastestTime)
-            {
-                fastestTime = currentTime; // Update the fastest time if the current time is faster
-            }
-
-            // Save the fastest time to a text file
-            SaveFastestTime(currentTime);
-        }
-        else
-        {
-            Debug.LogError("Timer script not found in the scene!");
-        }
-
-        SceneManager.LoadScene("HighScoreScene");
-    }
-    
-
-    private void SaveFastestTime(float currentTime)
-    {
-        string filePath = Application.dataPath + "/FastestTime.txt"; // Path to the text file
-        // Write the fastest time to the text file
-        using (StreamWriter writer = new StreamWriter(filePath, true))
-        {
-            writer.WriteLine(fastestTime);
-            writer.Close();
-        }
-        Debug.Log("Fastest time saved to file: " + fastestTime);
-    }
-    
 
     // Start is called before the first frame update
     void Start()
     {
-        timerScript = FindObjectOfType<Timer>(); // Find the Timer script in the scene
-        if (timerScript != null)
-        {
-            timerScript.StartTimer(); // Start the timer when the game starts
-        }
-        else
-        {
-            Debug.LogError("Timer script not found in the scene!");
-        }
-
         createPlaceHolders();
         createPieces();
+        shufflePieces();
     }
 
     // Update is called once per frame
@@ -85,16 +25,15 @@ public class ManagePuzzleGame : MonoBehaviour
     {
         timer += Time.deltaTime;
         if (timer >= 4 && !cardsShuffled)
-        {
-            shufflePieces();
-            cardsShuffled = true;
+        { 
+          shufflePieces();
+          cardsShuffled = true; 
         }
     }
 
     public void createPlaceHolders()
     {
-        phWidth = 100;
-        phHeight = 100;
+        phWidth = 100; phHeight = 100;
         float nbRows, nbColumns;
         nbRows = 5;
         nbColumns = 5;
@@ -103,35 +42,31 @@ public class ManagePuzzleGame : MonoBehaviour
             Vector3 centerPosition = new Vector3();
             centerPosition = GameObject.Find("rightSide").transform.position;
             float row, column;
-            row = i % 5;
-            column = i / 5;
-            Vector3 phPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2),
-                centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
+            row = i % 5; column = i / 5;
+            Vector3 phPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2), centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
             Image ph = (Image)(Instantiate(placeHolder, phPosition, Quaternion.identity));
-            ph.tag = "" + (i + 1);
-            ph.name = "PH" + (i + 1);
+            ph.tag = ""+(i + 1); ph.name = "PH"+(i + 1);
             ph.transform.SetParent(GameObject.Find("Canvas").transform);
         }
     }
 
-    public void createPieces()
-    {
-        phWidth = 100;
-        phHeight = 100;
-        float nbRows, nbColumns;
-        nbRows = 5;
-        nbColumns = 5;
-        for (int i = 0; i < 25; i++)
+    public void createPieces() 
+    { 
+      phWidth = 100;
+      phHeight = 100;
+      float nbRows, nbColumns; 
+      nbRows = 5; 
+      nbColumns = 5; 
+      for (int i = 0; i <25; i++)
         {
             Vector3 centerPosition = new Vector3();
             centerPosition = GameObject.Find("leftSide").transform.position;
-            float row = i % 5;
-            float column = i / 5;
-            Vector3 phPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2),
-                centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
+            float row, column;
+            row = i % 5;
+            column = i / 5;
+            Vector3 phPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2), centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
             Image ph = (Image)(Instantiate(piece, phPosition, Quaternion.identity));
-            ph.tag = "" + (i + 1);
-            ph.name = "Piece" + (i + 1);
+            ph.tag = "" +(i + 1); ph.name = "Piece" +(i + 1);
             ph.transform.SetParent(GameObject.Find("Canvas").transform);
             Sprite[] allSprites = Resources.LoadAll<Sprite>("Hiragana 'A'");
             Sprite s1 = allSprites[i];
@@ -152,27 +87,19 @@ public class ManagePuzzleGame : MonoBehaviour
             newArray[r] = tmp;
         }
 
-        for (int i = 0; i < 25; i++)
+        for(int i = 0; i < 25; i++)
         {
             float row, nbRows, nbColumns, column;
             nbRows = 5;
-            nbColumns = 5;
+            nbColumns = 5; 
             row = (newArray[i]) % 5;
             column = (newArray[i]) / 5;
             Vector3 centerPosition = new Vector3();
             centerPosition = GameObject.Find("leftSide").transform.position;
-            var g = GameObject.Find("Piece" + (i + 1));
-            Vector3 newPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2),
-                centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
+            var g = GameObject.Find("Piece"+(i + 1));
+            Vector3 newPosition = new Vector3(centerPosition.x + phWidth * (row - nbRows / 2), centerPosition.y - phHeight * (column - nbColumns / 2), centerPosition.z);
             g.transform.position = newPosition;
             g.GetComponent<DragAndDrop>().initCardPosition();
         }
     }
-
-    public void PiecePlaced()
-    {
-        correctlyPlacedPiecesCount++;
-    }
-    
-
 }
